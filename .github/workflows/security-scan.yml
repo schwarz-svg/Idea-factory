@@ -1,0 +1,159 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  schedule:
+    # Wöchentlicher Scan jeden Montag 08:00 UTC
+    - cron: '0 8 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  # ── CodeQL Static Analysis ──────────────────
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:javascript
+
+  # ── Dependency Vulnerability Check ─────────
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run npm audit
+        run: |
+          if [ -f package-lock.json ]; then
+            npm audit --audit-level=moderate --json > npm-audit-report.json || true
+            cat npm-audit-report.json
+          else
+            echo "No package-lock.json found — skipping npm audit (zero-dependency project)"
+          fi
+
+  # ── Secret Scanning ─────────────────────────
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Security Headers Check ──────────────────
+  headers-check:
+    name: Security Headers Validation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate vercel.json security headers
+        run: |
+          echo "Validating security headers configuration..."
+          python3 - <<'EOF'
+          import json, sys
+
+          with open('vercel.json') as f:
+              config = json.load(f)
+
+          headers = {}
+          for rule in config.get('headers', []):
+              if rule.get('source') == '/(.*)':
+                  for h in rule.get('headers', []):
+                      headers[h['key'].lower()] = h['value']
+
+          required = [
+              'strict-transport-security',
+              'x-content-type-options',
+              'x-frame-options',
+              'content-security-policy',
+              'referrer-policy',
+              'permissions-policy',
+          ]
+
+          missing = [h for h in required if h not in headers]
+          if missing:
+              print(f"FAIL: Missing security headers: {missing}")
+              sys.exit(1)
+          else:
+              print("PASS: All required security headers present")
+              for k, v in headers.items():
+                  print(f"  {k}: {v[:80]}{'...' if len(v) > 80 else ''}")
+          EOF
+
+  # ── HTML/JS Lint ────────────────────────────
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check for common security anti-patterns
+        run: |
+          echo "Checking for security anti-patterns..."
+          ISSUES=0
+
+          # eval() is dangerous — flag any usage
+          if grep -rn "eval(" src/ --include="*.js"; then
+            echo "WARNING: eval() detected in source files"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          # document.write() can lead to XSS
+          if grep -rn "document\.write(" src/ --include="*.js"; then
+            echo "WARNING: document.write() detected"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          # innerHTML without sanitization (informational)
+          COUNT=$(grep -c "\.innerHTML\s*=" src/js/app.js 2>/dev/null || echo 0)
+          echo "INFO: innerHTML assignments in app.js: $COUNT (ensure all inputs are sanitized)"
+
+          echo "Security anti-pattern check complete. Issues found: $ISSUES"

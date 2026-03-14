@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/css/styles.css">
+    <link rel="stylesheet" href="src/css/privacy.css">
     <!-- Stripe.js (ready for integration) -->
     <script src="https://js.stripe.com/v3/" defer></script>
 </head>
@@ -219,9 +220,10 @@
                     </div>
                     <div class="footer-col">
                         <h4>Rechtliches</h4>
-                        <a href="#">Datenschutz</a>
-                        <a href="#">Impressum</a>
-                        <a href="#">AGB</a>
+                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openPrivacyPolicy()">Datenschutz</a>
+                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openImprint()">Impressum</a>
+                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openTerms()">AGB</a>
+                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openPrivacySettings()">Cookie-Einstellungen</a>
                     </div>
                 </div>
             </div>
@@ -280,6 +282,235 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- ── Cookie Consent Banner ── -->
+    <div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookie-Einwilligung" aria-hidden="true">
+        <div class="cookie-banner-inner">
+            <div class="cookie-banner-text">
+                <h3>Wir respektieren deine Privatsphäre</h3>
+                <p>
+                    Wir verwenden Cookies, um die Grundfunktionen der Website zu ermöglichen.
+                    Weitere Cookies (Analyse, Marketing) nur mit deiner Einwilligung.
+                    <a href="#" onclick="event.preventDefault(); Security.openPrivacyPolicy()">Datenschutzerklärung</a>
+                </p>
+            </div>
+            <div class="cookie-banner-actions">
+                <button class="btn-cookie-settings" onclick="Security.openPrivacySettings()">Einstellungen</button>
+                <button class="btn-cookie-required" onclick="acceptRequiredCookies()">Nur notwendige</button>
+                <button class="btn-cookie-accept" onclick="acceptAllCookies()">Alle akzeptieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Cookie-Einstellungen ── -->
+    <div class="consent-settings-overlay" id="consentSettings" role="dialog" aria-label="Datenschutzeinstellungen">
+        <div class="consent-settings-panel">
+            <h2>Datenschutzeinstellungen</h2>
+            <p>Hier kannst du festlegen, welche Cookies du erlaubst. Du kannst deine Einstellungen jederzeit ändern.</p>
+
+            <div class="consent-item">
+                <div class="consent-item-header">
+                    <h4>Notwendige Cookies</h4>
+                    <span class="consent-required-badge">Immer aktiv</span>
+                </div>
+                <p>Diese Cookies sind für die grundlegende Funktion der Website erforderlich und können nicht deaktiviert werden. Sie speichern keine personenbezogenen Daten.</p>
+            </div>
+
+            <div class="consent-item">
+                <div class="consent-item-header">
+                    <h4>Analyse-Cookies</h4>
+                    <label class="toggle-consent" aria-label="Analyse-Cookies">
+                        <input type="checkbox" id="consentAnalytics">
+                        <span class="toggle-consent-track"></span>
+                    </label>
+                </div>
+                <p>Helfen uns zu verstehen, wie Besucher die Website nutzen. Alle Daten werden anonymisiert und auf EU-Servern verarbeitet.</p>
+            </div>
+
+            <div class="consent-item">
+                <div class="consent-item-header">
+                    <h4>Marketing-Cookies</h4>
+                    <label class="toggle-consent" aria-label="Marketing-Cookies">
+                        <input type="checkbox" id="consentMarketing">
+                        <span class="toggle-consent-track"></span>
+                    </label>
+                </div>
+                <p>Ermöglichen relevante Werbung. Werden nur gesetzt, wenn du hier zustimmst. Kein Tracking ohne Einwilligung.</p>
+            </div>
+
+            <div class="consent-settings-actions">
+                <button class="btn btn-ghost" onclick="Security.closePrivacySettings()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveConsentSettings()">Einstellungen speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Legal Overlay ── -->
+    <div class="legal-overlay" id="legalOverlay" onclick="Security.closeLegalModal()"></div>
+
+    <!-- ── Datenschutzerklärung ── -->
+    <div class="legal-modal" id="privacyModal" role="dialog" aria-label="Datenschutzerklärung">
+        <div class="legal-modal-header">
+            <h2>Datenschutzerklärung</h2>
+            <button class="legal-modal-close" onclick="Security.closeLegalModal()" aria-label="Schließen">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="legal-modal-body">
+            <h3>1. Verantwortlicher</h3>
+            <p>
+                <strong>Idea Factory</strong><br>
+                [Adresse eintragen]<br>
+                E-Mail: datenschutz@idea-factory.de
+            </p>
+
+            <h3>2. Erhobene Daten</h3>
+            <p>Wir verarbeiten ausschließlich folgende Daten:</p>
+            <ul>
+                <li><strong>Technisch notwendige Daten:</strong> Deine Cookie-Einwilligung (ja/nein pro Kategorie, Zeitstempel) — kein Personenbezug</li>
+                <li><strong>Zugriffsdaten:</strong> IP-Adresse, Browsertyp, Besuchszeit (von unserem Hosting-Anbieter Vercel erhoben, nicht von uns ausgewertet)</li>
+                <li><strong>Kontodaten (nach Registrierung):</strong> E-Mail-Adresse, Name, verschlüsseltes Passwort</li>
+            </ul>
+
+            <h3>3. Rechtsgrundlagen</h3>
+            <ul>
+                <li><strong>Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO):</strong> Kontoverwaltung, Zahlungsabwicklung</li>
+                <li><strong>Einwilligung (Art. 6 Abs. 1 lit. a DSGVO):</strong> Analyse- und Marketing-Cookies</li>
+                <li><strong>Berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO):</strong> IT-Sicherheit, Fehleranalyse</li>
+            </ul>
+
+            <h3>4. Cookies</h3>
+            <p>Wir verwenden technisch notwendige Cookies. Weitere Cookies nur mit deiner ausdrücklichen Einwilligung. Du kannst deine <a href="#" onclick="event.preventDefault(); Security.closeLegalModal(); Security.openPrivacySettings()">Einstellungen jederzeit ändern</a>.</p>
+
+            <h3>5. Speicherdauer</h3>
+            <ul>
+                <li>Cookie-Einwilligung: 365 Tage (dann erneute Abfrage)</li>
+                <li>Kontodaten: Bis zur Kontolöschung, danach Löschung innerhalb 30 Tagen</li>
+                <li>Rechnungsdaten: 10 Jahre (gesetzliche Aufbewahrungspflicht)</li>
+            </ul>
+
+            <h3>6. Deine Rechte</h3>
+            <p>Du hast das Recht auf <strong>Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit</strong> und <strong>Widerspruch</strong>.</p>
+            <p>Für die Ausübung deiner Rechte wende dich an: <strong>datenschutz@idea-factory.de</strong></p>
+            <p>Du hast außerdem das Recht, dich bei der zuständigen Datenschutz-Aufsichtsbehörde zu beschweren.</p>
+
+            <h3>7. Drittanbieter</h3>
+            <ul>
+                <li><strong>Vercel Inc. (Hosting):</strong> Server in der EU/EWR. Auftragsverarbeitungsvertrag geschlossen.</li>
+                <li><strong>Stripe Inc. (Zahlung):</strong> Kreditkartendaten werden direkt bei Stripe verarbeitet und verlassen nie unsere Server. <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener noreferrer">Datenschutz Stripe</a></li>
+                <li><strong>Google Fonts:</strong> Schriftarten werden von Google-Servern geladen. Es kann eine Verbindung zu Google-Servern in den USA hergestellt werden. Alternativ: Schriftarten lokal gespeichert (in Umsetzung).</li>
+            </ul>
+
+            <h3>8. Einwilligung widerrufen</h3>
+            <p>Du kannst deine Einwilligung jederzeit widerrufen. <a href="#" onclick="event.preventDefault(); Security.revokeConsent()">Einwilligung jetzt widerrufen</a></p>
+        </div>
+        <div class="legal-modal-footer">
+            <button class="btn btn-ghost" onclick="Security.closeLegalModal()">Schließen</button>
+        </div>
+    </div>
+
+    <!-- ── Impressum ── -->
+    <div class="legal-modal" id="imprintModal" role="dialog" aria-label="Impressum">
+        <div class="legal-modal-header">
+            <h2>Impressum</h2>
+            <button class="legal-modal-close" onclick="Security.closeLegalModal()" aria-label="Schließen">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="legal-modal-body">
+            <h3>Angaben gemäß § 5 TMG</h3>
+            <p>
+                <strong>Idea Factory</strong><br>
+                [Vollständiger Firmenname]<br>
+                [Straße und Hausnummer]<br>
+                [PLZ] [Stadt]<br>
+                Deutschland
+            </p>
+
+            <h3>Kontakt</h3>
+            <p>
+                Telefon: [Telefonnummer]<br>
+                E-Mail: kontakt@idea-factory.de
+            </p>
+
+            <h3>Handelsregister</h3>
+            <p>
+                Registergericht: [Amtsgericht Stadt]<br>
+                Registernummer: [HRB XXXXX]
+            </p>
+
+            <h3>Umsatzsteuer-ID</h3>
+            <p>
+                Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG:<br>
+                DE [Nummer eintragen]
+            </p>
+
+            <h3>Verantwortlich für den Inhalt (§ 55 Abs. 2 RStV)</h3>
+            <p>
+                [Vor- und Nachname]<br>
+                [Adresse]
+            </p>
+
+            <h3>Streitschlichtung</h3>
+            <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+            <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a></p>
+            <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+        </div>
+        <div class="legal-modal-footer">
+            <button class="btn btn-ghost" onclick="Security.closeLegalModal()">Schließen</button>
+        </div>
+    </div>
+
+    <!-- ── AGB ── -->
+    <div class="legal-modal" id="termsModal" role="dialog" aria-label="Allgemeine Geschäftsbedingungen">
+        <div class="legal-modal-header">
+            <h2>Allgemeine Geschäftsbedingungen</h2>
+            <button class="legal-modal-close" onclick="Security.closeLegalModal()" aria-label="Schließen">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="legal-modal-body">
+            <h3>§ 1 Geltungsbereich</h3>
+            <p>Diese AGB gelten für alle Verträge zwischen Idea Factory ([Firmenname]) und ihren Kunden über die Nutzung der angebotenen SaaS-Produkte und AI-Tools.</p>
+
+            <h3>§ 2 Vertragsschluss</h3>
+            <p>Der Vertrag kommt durch Registrierung und Buchung eines Produkts zustande. Mit der Registrierung akzeptierst du diese AGB.</p>
+
+            <h3>§ 3 Leistungsumfang</h3>
+            <p>Idea Factory stellt die gebuchten AI-Tools als SaaS (Software-as-a-Service) bereit. Die Verfügbarkeit beträgt 99,9 % pro Monat (SLA Enterprise). Für alle anderen Tarife gilt eine Best-Effort-Verfügbarkeit.</p>
+
+            <h3>§ 4 Preise & Zahlung</h3>
+            <ul>
+                <li>Preise verstehen sich zzgl. der gesetzlichen MwSt.</li>
+                <li>Zahlungen werden monatlich oder jährlich im Voraus fällig.</li>
+                <li>Zahlungsabwicklung über Stripe (PCI-DSS-konform).</li>
+            </ul>
+
+            <h3>§ 5 Kündigung</h3>
+            <p>Abonnements können jederzeit zum Ende des aktuellen Abrechnungszeitraums gekündigt werden. Keine Mindestlaufzeit außer bei Enterprise-Verträgen.</p>
+
+            <h3>§ 6 Datenschutz</h3>
+            <p>Die Verarbeitung personenbezogener Daten erfolgt gemäß unserer <a href="#" onclick="event.preventDefault(); Security.closeLegalModal(); Security.openPrivacyPolicy()">Datenschutzerklärung</a>.</p>
+
+            <h3>§ 7 Haftungsbeschränkung</h3>
+            <p>Idea Factory haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Bei leichter Fahrlässigkeit nur für die Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren Schaden.</p>
+
+            <h3>§ 8 Anwendbares Recht</h3>
+            <p>Es gilt deutsches Recht. Gerichtsstand ist [Stadt], sofern gesetzlich zulässig.</p>
+
+            <p><strong>Stand:</strong> März 2026</p>
+        </div>
+        <div class="legal-modal-footer">
+            <button class="btn btn-ghost" onclick="Security.closeLegalModal()">Schließen</button>
+        </div>
+    </div>
+
+    <script src="src/js/security.js"></script>
     <script src="src/js/app.js"></script>
+    <script>
+        // Security-Modul initialisieren (nach DOM-Aufbau durch app.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            initSecurity();
+        });
+    </script>
 </body>
 </html>
