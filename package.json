@@ -1,0 +1,28 @@
+{
+  "name": "idea-factory",
+  "version": "2.0.0",
+  "description": "Idea Factory - Datenschutzkonforme AI-Tools & SaaS-L\u00f6sungen",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx live-server --port=3000",
+    "dev": "npx live-server --port=3000 --open=/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schwarz-svg/Idea-factory.git"
+  },
+  "keywords": [
+    "saas",
+    "ai-tools",
+    "agentic-ai",
+    "dsgvo",
+    "privacy",
+    "stripe"
+  ],
+  "author": "schwarz-svg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/schwarz-svg/Idea-factory/issues"
+  },
+  "homepage": "https://github.com/schwarz-svg/Idea-factory#readme"
+}

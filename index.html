@@ -1,293 +1,285 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeVault - Dein Marketplace für Code-Projekte</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea Factory — Datenschutzkonforme AI-Tools & SaaS-Lösungen</title>
+    <meta name="description" content="Entdecke datenschutzkonforme AI-Tools und SaaS-Lösungen. Sofort einsatzbereit, DSGVO-konform, keine Einrichtung nötig.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/styles.css">
+    <!-- Stripe.js (ready for integration) -->
+    <script src="https://js.stripe.com/v3/" defer></script>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="#" class="logo" onclick="goHome()">
-        <svg class="logo-icon" viewBox="0 0 32 32" width="32" height="32">
-          <rect x="2" y="2" width="28" height="28" rx="6" fill="url(#logoGrad)"/>
-          <path d="M10 11l-4 5 4 5M22 11l4 5-4 5M18 9l-4 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
-        </svg>
-        <span>CodeVault</span>
-      </a>
-
-      <div class="search-container">
-        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" id="searchInput" placeholder="Projekte durchsuchen..." autocomplete="off">
-        <kbd class="search-shortcut">Ctrl+K</kbd>
-      </div>
-
-      <div class="nav-actions">
-        <div class="nav-dropdown">
-          <button class="nav-btn" id="categoryDropdownBtn">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            Kategorien
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-          <div class="dropdown-menu" id="categoryDropdown"></div>
-        </div>
-
-        <button class="nav-btn cart-btn" id="cartBtn" onclick="toggleCart()">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-          <span class="cart-badge" id="cartBadge">0</span>
-        </button>
-      </div>
-
-      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-search">
-      <input type="text" id="mobileSearchInput" placeholder="Projekte durchsuchen..." autocomplete="off">
-    </div>
-    <div class="mobile-categories" id="mobileCategories"></div>
-    <button class="mobile-cart-btn" onclick="toggleCart(); toggleMobileMenu();">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      Warenkorb (<span id="mobileCartCount">0</span>)
-    </button>
-  </div>
-
-  <!-- Hero Section -->
-  <section class="hero" id="heroSection">
-    <div class="hero-bg">
-      <div class="hero-grid"></div>
-    </div>
-    <div class="hero-content">
-      <div class="hero-badge">Über 1.200 Projekte verfügbar</div>
-      <h1>Dein Marketplace für<br><span class="gradient-text">Code-Projekte</span></h1>
-      <p class="hero-subtitle">Entdecke hochwertige Code-Projekte, Starter-Kits und Templates von talentierten Entwicklern. Sofort einsatzbereit.</p>
-      <div class="hero-actions">
-        <button class="btn-primary btn-lg" onclick="scrollToProjects()">Projekte entdecken</button>
-        <button class="btn-ghost btn-lg" onclick="document.getElementById('searchInput').focus()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          Suchen
-        </button>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><span class="stat-number">1.247</span><span class="stat-label">Projekte</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-number">8.4k</span><span class="stat-label">Entwickler</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-number">52k</span><span class="stat-label">Downloads</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Main Content -->
-  <main class="main-content" id="mainContent">
-    <div class="content-wrapper">
-      <!-- Sidebar -->
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h3>Filter</h3>
-          <button class="btn-text" onclick="resetFilters()">Zurücksetzen</button>
-        </div>
-
-        <div class="filter-section">
-          <h4 class="filter-title" onclick="toggleFilterSection(this)">
-            Kategorien
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-          </h4>
-          <div class="filter-body" id="categoryFilters"></div>
-        </div>
-
-        <div class="filter-section">
-          <h4 class="filter-title" onclick="toggleFilterSection(this)">
-            Preisbereich
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-          </h4>
-          <div class="filter-body">
-            <div class="price-range">
-              <input type="range" id="priceRange" min="0" max="49" value="49" oninput="updatePriceLabel(this.value); filterProjects()">
-              <div class="price-labels">
-                <span>Kostenlos</span>
-                <span id="priceLabel">Bis 49€</span>
-              </div>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo" onclick="goHome(event)">
+                <span class="logo-icon">✦</span>
+                <span class="logo-text">Idea Factory</span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#products" class="nav-link">Produkte</a>
+                <a href="#how-it-works" class="nav-link">So funktioniert's</a>
+                <a href="#pricing" class="nav-link">Preise</a>
             </div>
-            <label class="checkbox-label">
-              <input type="checkbox" id="freeOnly" onchange="filterProjects()">
-              <span class="checkmark"></span>
-              Nur kostenlose Projekte
-            </label>
-          </div>
-        </div>
-
-        <div class="filter-section">
-          <h4 class="filter-title" onclick="toggleFilterSection(this)">
-            Bewertung
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-          </h4>
-          <div class="filter-body">
-            <div class="rating-filters" id="ratingFilters">
-              <label class="radio-label" data-rating="0">
-                <input type="radio" name="rating" value="0" checked onchange="filterProjects()">
-                <span class="radio-mark"></span>
-                Alle Bewertungen
-              </label>
-              <label class="radio-label" data-rating="4">
-                <input type="radio" name="rating" value="4" onchange="filterProjects()">
-                <span class="radio-mark"></span>
-                <span class="stars-inline">★★★★☆</span> & höher
-              </label>
-              <label class="radio-label" data-rating="3">
-                <input type="radio" name="rating" value="3" onchange="filterProjects()">
-                <span class="radio-mark"></span>
-                <span class="stars-inline">★★★☆☆</span> & höher
-              </label>
+            <div class="nav-actions">
+                <button class="btn btn-ghost" onclick="openAuth('login')">Anmelden</button>
+                <button class="btn btn-primary" onclick="openAuth('signup')">Kostenlos starten</button>
+                <button class="nav-cart" onclick="toggleCart()" aria-label="Warenkorb">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menü">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
-          </div>
         </div>
+    </nav>
 
-        <div class="filter-section">
-          <h4 class="filter-title" onclick="toggleFilterSection(this)">
-            Sprache / Framework
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-          </h4>
-          <div class="filter-body">
-            <div class="tag-filters" id="tagFilters"></div>
-          </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#products" class="mobile-link" onclick="toggleMobileMenu()">Produkte</a>
+        <a href="#how-it-works" class="mobile-link" onclick="toggleMobileMenu()">So funktioniert's</a>
+        <a href="#pricing" class="mobile-link" onclick="toggleMobileMenu()">Preise</a>
+        <div class="mobile-actions">
+            <button class="btn btn-ghost btn-full" onclick="openAuth('login'); toggleMobileMenu()">Anmelden</button>
+            <button class="btn btn-primary btn-full" onclick="openAuth('signup'); toggleMobileMenu()">Kostenlos starten</button>
         </div>
+    </div>
 
-        <button class="btn-sidebar-close" id="sidebarCloseBtn" onclick="toggleSidebar()">Filter schließen</button>
-      </aside>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                DSGVO-konform & sofort einsatzbereit
+            </div>
+            <h1 class="hero-title">
+                AI-Tools, die du<br>
+                <span class="hero-highlight">sofort nutzen</span> kannst.
+            </h1>
+            <p class="hero-subtitle">
+                Datenschutzkonforme SaaS-Lösungen mit Agentic AI.
+                Kein Setup, keine Wartezeit — wähle ein Tool, starte sofort.
+            </p>
+            <div class="hero-cta">
+                <a href="#products" class="btn btn-primary btn-large">Produkte entdecken</a>
+                <a href="#how-it-works" class="btn btn-ghost btn-large">So funktioniert's</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">100%</span>
+                    <span class="stat-label">DSGVO-konform</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">&lt; 30s</span>
+                    <span class="stat-label">bis zum Start</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">EU</span>
+                    <span class="stat-label">Server-Standort</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      <!-- Project Listing -->
-      <section class="listing-section">
-        <div class="listing-header">
-          <div class="listing-info">
-            <h2 id="listingTitle">Alle Projekte</h2>
-            <span class="listing-count" id="listingCount">12 Projekte</span>
-          </div>
-          <div class="listing-controls">
-            <button class="btn-filter-mobile" onclick="toggleSidebar()">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
-              Filter
+    <!-- Products Section -->
+    <section class="section" id="products">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2 class="section-title">Unsere Produkte</h2>
+                <p class="section-subtitle">Jedes Tool ist sofort einsatzbereit. Wähle, bezahle, starte.</p>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section section-alt" id="how-it-works">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2 class="section-title">So einfach geht's</h2>
+                <p class="section-subtitle">In drei Schritten zum produktiven Einsatz.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Auswählen</h3>
+                    <p class="step-text">Wähle das AI-Tool, das zu deinem Anwendungsfall passt. Jedes Produkt bietet eine kostenlose Testphase.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Bezahlen</h3>
+                    <p class="step-text">Sichere Bezahlung via Stripe. Keine versteckten Kosten, jederzeit kündbar.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Loslegen</h3>
+                    <p class="step-text">Direkt nach der Bezahlung startet dein Tool. Kein Setup, keine Konfiguration nötig.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="section" id="trust">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2 class="section-title">Warum Idea Factory?</h2>
+                <p class="section-subtitle">Datenschutz und Benutzerfreundlichkeit sind keine Gegensätze.</p>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3>DSGVO-konform</h3>
+                    <p>Alle Daten werden ausschließlich auf EU-Servern verarbeitet. Volle Transparenz, keine Drittland-Transfers.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <h3>Sofort einsatzbereit</h3>
+                    <p>Kein langwieriges Onboarding. Nach dem Kauf kannst du innerhalb von Sekunden loslegen.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                    </div>
+                    <h3>Agentic AI</h3>
+                    <p>Unsere AI-Agenten handeln autonom in deinem Sinne — intelligent, proaktiv und immer unter deiner Kontrolle.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <h3>Sichere Bezahlung</h3>
+                    <p>Stripe-Integration für maximale Sicherheit. Alle gängigen Zahlungsmethoden, jederzeit kündbar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section section-alt" id="pricing">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2 class="section-title">Transparente Preise</h2>
+                <p class="section-subtitle">Keine versteckten Gebühren. Zahle nur, was du brauchst.</p>
+            </div>
+            <div class="pricing-toggle">
+                <span class="toggle-label" id="toggleMonthly">Monatlich</span>
+                <button class="toggle-switch" id="pricingToggle" onclick="togglePricing()" aria-label="Abrechnungszeitraum wechseln">
+                    <span class="toggle-knob"></span>
+                </button>
+                <span class="toggle-label" id="toggleYearly">Jährlich <span class="toggle-badge">-20%</span></span>
+            </div>
+            <div class="pricing-grid" id="pricingGrid">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+        <div class="section-inner">
+            <h2 class="cta-title">Bereit, produktiver zu werden?</h2>
+            <p class="cta-text">Starte jetzt kostenlos und entdecke, wie datenschutzkonforme AI-Tools deine Arbeit transformieren.</p>
+            <button class="btn btn-primary btn-large" onclick="openAuth('signup')">Kostenlos starten</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="logo-icon">✦</span>
+                    <span class="logo-text">Idea Factory</span>
+                    <p class="footer-tagline">Datenschutzkonforme AI-Tools für modernes Arbeiten.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Produkte</h4>
+                        <a href="#products">Alle Produkte</a>
+                        <a href="#pricing">Preise</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Unternehmen</h4>
+                        <a href="#">Über uns</a>
+                        <a href="#">Kontakt</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Rechtliches</h4>
+                        <a href="#">Datenschutz</a>
+                        <a href="#">Impressum</a>
+                        <a href="#">AGB</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Idea Factory. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-label="Warenkorb">
+        <div class="cart-header">
+            <h2>Warenkorb</h2>
+            <button class="cart-close" onclick="toggleCart()" aria-label="Warenkorb schließen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
-            <div class="sort-select">
-              <select id="sortSelect" onchange="sortProjects(this.value)">
-                <option value="featured">Empfohlen</option>
-                <option value="newest">Neueste</option>
-                <option value="price-low">Preis: Niedrig → Hoch</option>
-                <option value="price-high">Preis: Hoch → Niedrig</option>
-                <option value="rating">Beste Bewertung</option>
-                <option value="downloads">Meiste Downloads</option>
-              </select>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <p>Dein Warenkorb ist leer.</p>
             </div>
-          </div>
         </div>
-
-        <div class="projects-grid" id="projectsGrid"></div>
-
-        <div class="no-results" id="noResults" style="display:none;">
-          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>
-          <h3>Keine Projekte gefunden</h3>
-          <p>Versuche andere Suchbegriffe oder setze die Filter zurück.</p>
-          <button class="btn-primary" onclick="resetFilters()">Filter zurücksetzen</button>
+        <div class="cart-footer" id="cartFooter" style="display:none">
+            <div class="cart-total">
+                <span>Gesamt</span>
+                <span id="cartTotal">0,00 €</span>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="checkout()">Zur Kasse (Stripe)</button>
+            <p class="cart-hint">Sichere Bezahlung via Stripe. Jederzeit kündbar.</p>
         </div>
-      </section>
+    </aside>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authOverlay" onclick="closeAuth()"></div>
+    <div class="modal" id="authModal" role="dialog" aria-label="Anmeldung">
+        <button class="modal-close" onclick="closeAuth()" aria-label="Schließen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="auth-content" id="authContent">
+            <!-- Rendered by JS -->
+        </div>
     </div>
-  </main>
 
-  <!-- Project Detail Modal -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal" id="projectModal">
-      <button class="modal-close" onclick="closeModalDirect()">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-      <div class="modal-content" id="modalContent"></div>
+    <!-- Product Detail Modal -->
+    <div class="modal-overlay" id="detailOverlay" onclick="closeDetail()"></div>
+    <div class="modal modal-large" id="detailModal" role="dialog" aria-label="Produktdetails">
+        <button class="modal-close" onclick="closeDetail()" aria-label="Schließen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="detail-content" id="detailContent">
+            <!-- Rendered by JS -->
+        </div>
     </div>
-  </div>
 
-  <!-- Cart Sidebar -->
-  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-  <div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header">
-      <h3>Warenkorb</h3>
-      <button class="cart-close" onclick="toggleCart()">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer" id="cartFooter">
-      <div class="cart-total">
-        <span>Gesamt</span>
-        <span id="cartTotal">0,00 €</span>
-      </div>
-      <button class="btn-primary btn-block" onclick="checkout()">Zur Kasse</button>
-    </div>
-  </div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Toast Notification -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a href="#" class="logo" onclick="goHome()">
-            <svg class="logo-icon" viewBox="0 0 32 32" width="28" height="28">
-              <rect x="2" y="2" width="28" height="28" rx="6" fill="url(#logoGrad2)"/>
-              <path d="M10 11l-4 5 4 5M22 11l4 5-4 5M18 9l-4 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <defs><linearGradient id="logoGrad2" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
-            </svg>
-            <span>CodeVault</span>
-          </a>
-          <p>Der führende Marketplace für hochwertige Code-Projekte und Developer-Tools.</p>
-        </div>
-        <div class="footer-links">
-          <h4>Marketplace</h4>
-          <ul>
-            <li><a href="#">Alle Projekte</a></li>
-            <li><a href="#">Kategorien</a></li>
-            <li><a href="#">Kostenlose Projekte</a></li>
-            <li><a href="#">Neuheiten</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Für Entwickler</h4>
-          <ul>
-            <li><a href="#">Projekt verkaufen</a></li>
-            <li><a href="#">Dokumentation</a></li>
-            <li><a href="#">API Zugang</a></li>
-            <li><a href="#">Partnerprogramm</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>Unternehmen</h4>
-          <ul>
-            <li><a href="#">Über uns</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Karriere</a></li>
-            <li><a href="#">Kontakt</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 CodeVault. Alle Rechte vorbehalten.</p>
-        <div class="footer-bottom-links">
-          <a href="#">Datenschutz</a>
-          <a href="#">Impressum</a>
-          <a href="#">AGB</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script src="app.js"></script>
+    <script src="src/js/app.js"></script>
 </body>
 </html>
