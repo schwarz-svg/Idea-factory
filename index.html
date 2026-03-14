@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Idea Factory — Datenschutzkonforme AI-Tools & SaaS-Lösungen</title>
     <meta name="description" content="Entdecke datenschutzkonforme AI-Tools und SaaS-Lösungen. Sofort einsatzbereit, DSGVO-konform, keine Einrichtung nötig.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts: Self-hosted Inter — kein Drittland-Transfer -->
     <link rel="stylesheet" href="src/css/styles.css">
     <link rel="stylesheet" href="src/css/privacy.css">
     <!-- Stripe.js (ready for integration) -->
@@ -17,7 +15,7 @@
     <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
-            <a href="#" class="nav-logo" onclick="goHome(event)">
+            <a href="#" class="nav-logo" data-action="go-home">
                 <span class="logo-icon">✦</span>
                 <span class="logo-text">Idea Factory</span>
             </a>
@@ -27,13 +25,13 @@
                 <a href="#pricing" class="nav-link">Preise</a>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-ghost" onclick="openAuth('login')">Anmelden</button>
-                <button class="btn btn-primary" onclick="openAuth('signup')">Kostenlos starten</button>
-                <button class="nav-cart" onclick="toggleCart()" aria-label="Warenkorb">
+                <button class="btn btn-ghost" data-action="open-auth" data-mode="login">Anmelden</button>
+                <button class="btn btn-primary" data-action="open-auth" data-mode="signup">Kostenlos starten</button>
+                <button class="nav-cart" data-action="toggle-cart" aria-label="Warenkorb">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                     <span class="cart-badge" id="cartBadge">0</span>
                 </button>
-                <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menü">
+                <button class="nav-hamburger" data-action="toggle-mobile-menu" aria-label="Menü">
                     <span></span><span></span><span></span>
                 </button>
             </div>
@@ -42,12 +40,12 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
-        <a href="#products" class="mobile-link" onclick="toggleMobileMenu()">Produkte</a>
-        <a href="#how-it-works" class="mobile-link" onclick="toggleMobileMenu()">So funktioniert's</a>
-        <a href="#pricing" class="mobile-link" onclick="toggleMobileMenu()">Preise</a>
+        <a href="#products" class="mobile-link" data-action="close-mobile-menu">Produkte</a>
+        <a href="#how-it-works" class="mobile-link" data-action="close-mobile-menu">So funktioniert's</a>
+        <a href="#pricing" class="mobile-link" data-action="close-mobile-menu">Preise</a>
         <div class="mobile-actions">
-            <button class="btn btn-ghost btn-full" onclick="openAuth('login'); toggleMobileMenu()">Anmelden</button>
-            <button class="btn btn-primary btn-full" onclick="openAuth('signup'); toggleMobileMenu()">Kostenlos starten</button>
+            <button class="btn btn-ghost btn-full" data-action="open-auth" data-mode="login">Anmelden</button>
+            <button class="btn btn-primary btn-full" data-action="open-auth" data-mode="signup">Kostenlos starten</button>
         </div>
     </div>
 
@@ -178,7 +176,7 @@
             </div>
             <div class="pricing-toggle">
                 <span class="toggle-label" id="toggleMonthly">Monatlich</span>
-                <button class="toggle-switch" id="pricingToggle" onclick="togglePricing()" aria-label="Abrechnungszeitraum wechseln">
+                <button class="toggle-switch" id="pricingToggle" data-action="toggle-pricing" aria-label="Abrechnungszeitraum wechseln">
                     <span class="toggle-knob"></span>
                 </button>
                 <span class="toggle-label" id="toggleYearly">Jährlich <span class="toggle-badge">-20%</span></span>
@@ -194,7 +192,7 @@
         <div class="section-inner">
             <h2 class="cta-title">Bereit, produktiver zu werden?</h2>
             <p class="cta-text">Starte jetzt kostenlos und entdecke, wie datenschutzkonforme AI-Tools deine Arbeit transformieren.</p>
-            <button class="btn btn-primary btn-large" onclick="openAuth('signup')">Kostenlos starten</button>
+            <button class="btn btn-primary btn-large" data-action="open-auth" data-mode="signup">Kostenlos starten</button>
         </div>
     </section>
 
@@ -220,25 +218,25 @@
                     </div>
                     <div class="footer-col">
                         <h4>Rechtliches</h4>
-                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openPrivacyPolicy()">Datenschutz</a>
-                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openImprint()">Impressum</a>
-                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openTerms()">AGB</a>
-                        <a href="#" class="footer-privacy-link" onclick="event.preventDefault(); Security.openPrivacySettings()">Cookie-Einstellungen</a>
+                        <a href="#" class="footer-privacy-link" data-action="open-privacy-policy">Datenschutz</a>
+                        <a href="#" class="footer-privacy-link" data-action="open-imprint">Impressum</a>
+                        <a href="#" class="footer-privacy-link" data-action="open-terms">AGB</a>
+                        <a href="#" class="footer-privacy-link" data-action="open-privacy-settings">Cookie-Einstellungen</a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Idea Factory. Alle Rechte vorbehalten.</p>
+                <p>&copy; 2026 Idea Factory GbR. Alle Rechte vorbehalten.</p>
             </div>
         </div>
     </footer>
 
     <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-overlay" id="cartOverlay" data-action="toggle-cart"></div>
     <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-label="Warenkorb">
         <div class="cart-header">
             <h2>Warenkorb</h2>
-            <button class="cart-close" onclick="toggleCart()" aria-label="Warenkorb schließen">
+            <button class="cart-close" data-action="toggle-cart" aria-label="Warenkorb schließen">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
@@ -252,15 +250,15 @@
                 <span>Gesamt</span>
                 <span id="cartTotal">0,00 €</span>
             </div>
-            <button class="btn btn-primary btn-full" onclick="checkout()">Zur Kasse (Stripe)</button>
+            <button class="btn btn-primary btn-full" data-action="checkout">Zur Kasse (Stripe)</button>
             <p class="cart-hint">Sichere Bezahlung via Stripe. Jederzeit kündbar.</p>
         </div>
     </aside>
 
     <!-- Auth Modal -->
-    <div class="modal-overlay" id="authOverlay" onclick="closeAuth()"></div>
+    <div class="modal-overlay" id="authOverlay" data-action="close-auth"></div>
     <div class="modal" id="authModal" role="dialog" aria-label="Anmeldung">
-        <button class="modal-close" onclick="closeAuth()" aria-label="Schließen">
+        <button class="modal-close" data-action="close-auth" aria-label="Schließen">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
         <div class="auth-content" id="authContent">
@@ -269,9 +267,9 @@
     </div>
 
     <!-- Product Detail Modal -->
-    <div class="modal-overlay" id="detailOverlay" onclick="closeDetail()"></div>
+    <div class="modal-overlay" id="detailOverlay" data-action="close-detail"></div>
     <div class="modal modal-large" id="detailModal" role="dialog" aria-label="Produktdetails">
-        <button class="modal-close" onclick="closeDetail()" aria-label="Schließen">
+        <button class="modal-close" data-action="close-detail" aria-label="Schließen">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
         <div class="detail-content" id="detailContent">
@@ -290,13 +288,13 @@
                 <p>
                     Wir verwenden Cookies, um die Grundfunktionen der Website zu ermöglichen.
                     Weitere Cookies (Analyse, Marketing) nur mit deiner Einwilligung.
-                    <a href="#" onclick="event.preventDefault(); Security.openPrivacyPolicy()">Datenschutzerklärung</a>
+                    <a href="#" data-action="open-privacy-policy">Datenschutzerklärung</a>
                 </p>
             </div>
             <div class="cookie-banner-actions">
-                <button class="btn-cookie-settings" onclick="Security.openPrivacySettings()">Einstellungen</button>
-                <button class="btn-cookie-required" onclick="acceptRequiredCookies()">Nur notwendige</button>
-                <button class="btn-cookie-accept" onclick="acceptAllCookies()">Alle akzeptieren</button>
+                <button class="btn-cookie-settings" data-action="open-privacy-settings">Einstellungen</button>
+                <button class="btn-cookie-required" data-action="accept-required-cookies">Nur notwendige</button>
+                <button class="btn-cookie-accept" data-action="accept-all-cookies">Alle akzeptieren</button>
             </div>
         </div>
     </div>
@@ -318,7 +316,7 @@
             <div class="consent-item">
                 <div class="consent-item-header">
                     <h4>Analyse-Cookies</h4>
-                    <label class="toggle-consent" aria-label="Analyse-Cookies">
+                    <label class="toggle-consent" aria-label="Analyse-Cookies aktivieren">
                         <input type="checkbox" id="consentAnalytics">
                         <span class="toggle-consent-track"></span>
                     </label>
@@ -329,7 +327,7 @@
             <div class="consent-item">
                 <div class="consent-item-header">
                     <h4>Marketing-Cookies</h4>
-                    <label class="toggle-consent" aria-label="Marketing-Cookies">
+                    <label class="toggle-consent" aria-label="Marketing-Cookies aktivieren">
                         <input type="checkbox" id="consentMarketing">
                         <span class="toggle-consent-track"></span>
                     </label>
@@ -338,28 +336,30 @@
             </div>
 
             <div class="consent-settings-actions">
-                <button class="btn btn-ghost" onclick="Security.closePrivacySettings()">Abbrechen</button>
-                <button class="btn btn-primary" onclick="saveConsentSettings()">Einstellungen speichern</button>
+                <button class="btn btn-ghost" data-action="close-privacy-settings">Abbrechen</button>
+                <button class="btn btn-primary" data-action="save-consent-settings">Einstellungen speichern</button>
             </div>
         </div>
     </div>
 
     <!-- ── Legal Overlay ── -->
-    <div class="legal-overlay" id="legalOverlay" onclick="Security.closeLegalModal()"></div>
+    <div class="legal-overlay" id="legalOverlay" data-action="close-legal-modal"></div>
 
     <!-- ── Datenschutzerklärung ── -->
     <div class="legal-modal" id="privacyModal" role="dialog" aria-label="Datenschutzerklärung">
         <div class="legal-modal-header">
             <h2>Datenschutzerklärung</h2>
-            <button class="legal-modal-close" onclick="Security.closeLegalModal()" aria-label="Schließen">
+            <button class="legal-modal-close" data-action="close-legal-modal" aria-label="Schließen">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
         <div class="legal-modal-body">
             <h3>1. Verantwortlicher</h3>
             <p>
-                <strong>Idea Factory</strong><br>
-                [Adresse eintragen]<br>
+                <strong>Idea Factory GbR</strong><br>
+                vertreten durch Rocky Wüst und Melina Schwarz<br>
+                [Straße und Hausnummer]<br>
+                [PLZ] [Stadt]<br>
                 E-Mail: datenschutz@idea-factory.de
             </p>
 
@@ -378,33 +378,35 @@
                 <li><strong>Berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO):</strong> IT-Sicherheit, Fehleranalyse</li>
             </ul>
 
-            <h3>4. Cookies</h3>
-            <p>Wir verwenden technisch notwendige Cookies. Weitere Cookies nur mit deiner ausdrücklichen Einwilligung. Du kannst deine <a href="#" onclick="event.preventDefault(); Security.closeLegalModal(); Security.openPrivacySettings()">Einstellungen jederzeit ändern</a>.</p>
+            <h3>4. Schriftarten</h3>
+            <p>Diese Website verwendet die Schriftart <strong>Inter</strong>, die lokal auf unserem Server gespeichert ist. Es werden keine Verbindungen zu externen Schriftart-Servern hergestellt. Kein Drittland-Transfer.</p>
 
-            <h3>5. Speicherdauer</h3>
+            <h3>5. Cookies</h3>
+            <p>Wir verwenden technisch notwendige Cookies. Weitere Cookies nur mit deiner ausdrücklichen Einwilligung. Du kannst deine <a href="#" data-action="open-privacy-from-legal">Einstellungen jederzeit ändern</a>.</p>
+
+            <h3>6. Speicherdauer</h3>
             <ul>
                 <li>Cookie-Einwilligung: 365 Tage (dann erneute Abfrage)</li>
                 <li>Kontodaten: Bis zur Kontolöschung, danach Löschung innerhalb 30 Tagen</li>
                 <li>Rechnungsdaten: 10 Jahre (gesetzliche Aufbewahrungspflicht)</li>
             </ul>
 
-            <h3>6. Deine Rechte</h3>
+            <h3>7. Deine Rechte</h3>
             <p>Du hast das Recht auf <strong>Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit</strong> und <strong>Widerspruch</strong>.</p>
             <p>Für die Ausübung deiner Rechte wende dich an: <strong>datenschutz@idea-factory.de</strong></p>
             <p>Du hast außerdem das Recht, dich bei der zuständigen Datenschutz-Aufsichtsbehörde zu beschweren.</p>
 
-            <h3>7. Drittanbieter</h3>
+            <h3>8. Drittanbieter</h3>
             <ul>
                 <li><strong>Vercel Inc. (Hosting):</strong> Server in der EU/EWR. Auftragsverarbeitungsvertrag geschlossen.</li>
                 <li><strong>Stripe Inc. (Zahlung):</strong> Kreditkartendaten werden direkt bei Stripe verarbeitet und verlassen nie unsere Server. <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener noreferrer">Datenschutz Stripe</a></li>
-                <li><strong>Google Fonts:</strong> Schriftarten werden von Google-Servern geladen. Es kann eine Verbindung zu Google-Servern in den USA hergestellt werden. Alternativ: Schriftarten lokal gespeichert (in Umsetzung).</li>
             </ul>
 
-            <h3>8. Einwilligung widerrufen</h3>
-            <p>Du kannst deine Einwilligung jederzeit widerrufen. <a href="#" onclick="event.preventDefault(); Security.revokeConsent()">Einwilligung jetzt widerrufen</a></p>
+            <h3>9. Einwilligung widerrufen</h3>
+            <p>Du kannst deine Einwilligung jederzeit widerrufen. <a href="#" data-action="revoke-consent">Einwilligung jetzt widerrufen</a></p>
         </div>
         <div class="legal-modal-footer">
-            <button class="btn btn-ghost" onclick="Security.closeLegalModal()">Schließen</button>
+            <button class="btn btn-ghost" data-action="close-legal-modal">Schließen</button>
         </div>
     </div>
 
@@ -412,15 +414,15 @@
     <div class="legal-modal" id="imprintModal" role="dialog" aria-label="Impressum">
         <div class="legal-modal-header">
             <h2>Impressum</h2>
-            <button class="legal-modal-close" onclick="Security.closeLegalModal()" aria-label="Schließen">
+            <button class="legal-modal-close" data-action="close-legal-modal" aria-label="Schließen">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
         <div class="legal-modal-body">
             <h3>Angaben gemäß § 5 TMG</h3>
             <p>
-                <strong>Idea Factory</strong><br>
-                [Vollständiger Firmenname]<br>
+                <strong>Idea Factory GbR</strong><br>
+                vertreten durch Rocky Wüst und Melina Schwarz<br>
                 [Straße und Hausnummer]<br>
                 [PLZ] [Stadt]<br>
                 Deutschland
@@ -428,27 +430,29 @@
 
             <h3>Kontakt</h3>
             <p>
-                Telefon: [Telefonnummer]<br>
                 E-Mail: kontakt@idea-factory.de
             </p>
 
-            <h3>Handelsregister</h3>
+            <h3>Gesellschafter</h3>
             <p>
-                Registergericht: [Amtsgericht Stadt]<br>
-                Registernummer: [HRB XXXXX]
+                Rocky Wüst<br>
+                Melina Schwarz
             </p>
 
             <h3>Umsatzsteuer-ID</h3>
             <p>
                 Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG:<br>
-                DE [Nummer eintragen]
+                DE [Nummer eintragen — nach Beantragung beim Finanzamt]
             </p>
 
-            <h3>Verantwortlich für den Inhalt (§ 55 Abs. 2 RStV)</h3>
+            <h3>Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</h3>
             <p>
-                [Vor- und Nachname]<br>
-                [Adresse]
+                Rocky Wüst und Melina Schwarz<br>
+                [Adresse wie oben]
             </p>
+
+            <h3>Hinweis zur GbR</h3>
+            <p>Die Idea Factory GbR ist eine Gesellschaft bürgerlichen Rechts (GbR) nach §§ 705 ff. BGB. Es besteht keine Eintragung im Handelsregister.</p>
 
             <h3>Streitschlichtung</h3>
             <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
@@ -456,7 +460,7 @@
             <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
         </div>
         <div class="legal-modal-footer">
-            <button class="btn btn-ghost" onclick="Security.closeLegalModal()">Schließen</button>
+            <button class="btn btn-ghost" data-action="close-legal-modal">Schließen</button>
         </div>
     </div>
 
@@ -464,21 +468,21 @@
     <div class="legal-modal" id="termsModal" role="dialog" aria-label="Allgemeine Geschäftsbedingungen">
         <div class="legal-modal-header">
             <h2>Allgemeine Geschäftsbedingungen</h2>
-            <button class="legal-modal-close" onclick="Security.closeLegalModal()" aria-label="Schließen">
+            <button class="legal-modal-close" data-action="close-legal-modal" aria-label="Schließen">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
         <div class="legal-modal-body">
             <h3>§ 1 Geltungsbereich</h3>
-            <p>Diese AGB gelten für alle Verträge zwischen Idea Factory ([Firmenname]) und ihren Kunden über die Nutzung der angebotenen SaaS-Produkte und AI-Tools.</p>
+            <p>Diese AGB gelten für alle Verträge zwischen der <strong>Idea Factory GbR</strong> (vertreten durch Rocky Wüst und Melina Schwarz) und ihren Kunden über die Nutzung der angebotenen SaaS-Produkte und AI-Tools.</p>
 
             <h3>§ 2 Vertragsschluss</h3>
             <p>Der Vertrag kommt durch Registrierung und Buchung eines Produkts zustande. Mit der Registrierung akzeptierst du diese AGB.</p>
 
             <h3>§ 3 Leistungsumfang</h3>
-            <p>Idea Factory stellt die gebuchten AI-Tools als SaaS (Software-as-a-Service) bereit. Die Verfügbarkeit beträgt 99,9 % pro Monat (SLA Enterprise). Für alle anderen Tarife gilt eine Best-Effort-Verfügbarkeit.</p>
+            <p>Die Idea Factory GbR stellt die gebuchten AI-Tools als SaaS (Software-as-a-Service) bereit. Die Verfügbarkeit beträgt 99,9 % pro Monat (SLA Enterprise). Für alle anderen Tarife gilt eine Best-Effort-Verfügbarkeit.</p>
 
-            <h3>§ 4 Preise & Zahlung</h3>
+            <h3>§ 4 Preise &amp; Zahlung</h3>
             <ul>
                 <li>Preise verstehen sich zzgl. der gesetzlichen MwSt.</li>
                 <li>Zahlungen werden monatlich oder jährlich im Voraus fällig.</li>
@@ -489,10 +493,10 @@
             <p>Abonnements können jederzeit zum Ende des aktuellen Abrechnungszeitraums gekündigt werden. Keine Mindestlaufzeit außer bei Enterprise-Verträgen.</p>
 
             <h3>§ 6 Datenschutz</h3>
-            <p>Die Verarbeitung personenbezogener Daten erfolgt gemäß unserer <a href="#" onclick="event.preventDefault(); Security.closeLegalModal(); Security.openPrivacyPolicy()">Datenschutzerklärung</a>.</p>
+            <p>Die Verarbeitung personenbezogener Daten erfolgt gemäß unserer <a href="#" data-action="open-privacy-from-agb">Datenschutzerklärung</a>.</p>
 
             <h3>§ 7 Haftungsbeschränkung</h3>
-            <p>Idea Factory haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Bei leichter Fahrlässigkeit nur für die Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren Schaden.</p>
+            <p>Die Idea Factory GbR haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Bei leichter Fahrlässigkeit nur für die Verletzung wesentlicher Vertragspflichten, begrenzt auf den vorhersehbaren Schaden.</p>
 
             <h3>§ 8 Anwendbares Recht</h3>
             <p>Es gilt deutsches Recht. Gerichtsstand ist [Stadt], sofern gesetzlich zulässig.</p>
@@ -500,17 +504,11 @@
             <p><strong>Stand:</strong> März 2026</p>
         </div>
         <div class="legal-modal-footer">
-            <button class="btn btn-ghost" onclick="Security.closeLegalModal()">Schließen</button>
+            <button class="btn btn-ghost" data-action="close-legal-modal">Schließen</button>
         </div>
     </div>
 
     <script src="src/js/security.js"></script>
     <script src="src/js/app.js"></script>
-    <script>
-        // Security-Modul initialisieren (nach DOM-Aufbau durch app.js)
-        document.addEventListener('DOMContentLoaded', () => {
-            initSecurity();
-        });
-    </script>
 </body>
 </html>

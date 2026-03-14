@@ -2,6 +2,8 @@
    Idea Factory — App Logic
    ============================================ */
 
+'use strict';
+
 // ── Product Data ──────────────────────────────
 const products = [
     {
@@ -195,13 +197,167 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartUI();
     initNavScroll();
     initKeyboard();
+    initEvents();
+    initSecurity();
 });
+
+// ── Event Delegation ───────────────────────────
+/**
+ * Zentrale Event-Delegation: alle Klick-Aktionen werden über
+ * data-action-Attribute gesteuert — keine Inline-Handler im HTML.
+ * Dies eliminiert die Notwendigkeit von CSP 'unsafe-inline' für
+ * event handler-basiertes JavaScript.
+ */
+function initEvents() {
+    document.addEventListener('click', handleGlobalClick);
+    document.addEventListener('submit', handleGlobalSubmit);
+}
+
+function handleGlobalClick(e) {
+    const target = e.target.closest('[data-action]');
+    if (!target) return;
+
+    const action = target.dataset.action;
+    const mode = target.dataset.mode;
+    const id = target.dataset.id;
+
+    switch (action) {
+        case 'go-home':
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            break;
+
+        case 'open-auth':
+            e.preventDefault();
+            // Mobilmenü schließen falls offen
+            if (document.getElementById('mobileMenu').classList.contains('active')) {
+                toggleMobileMenu();
+            }
+            openAuth(mode || 'login');
+            break;
+
+        case 'close-auth':
+            closeAuth();
+            break;
+
+        case 'toggle-cart':
+            toggleCart();
+            break;
+
+        case 'toggle-mobile-menu':
+            toggleMobileMenu();
+            break;
+
+        case 'close-mobile-menu':
+            // <a href="#..."> — Default-Navigation beibehalten, nur Menü schließen
+            toggleMobileMenu();
+            break;
+
+        case 'toggle-pricing':
+            togglePricing();
+            break;
+
+        case 'checkout':
+            checkout();
+            break;
+
+        case 'close-detail':
+            closeDetail();
+            break;
+
+        case 'show-detail':
+            showDetail(id);
+            break;
+
+        case 'add-to-cart':
+            e.stopPropagation(); // Verhindert Öffnen des Detail-Modals
+            addToCart(id);
+            break;
+
+        case 'add-to-cart-close':
+            addToCart(id);
+            closeDetail();
+            break;
+
+        case 'remove-from-cart':
+            removeFromCart(id);
+            break;
+
+        case 'open-privacy-policy':
+            e.preventDefault();
+            Security.openPrivacyPolicy();
+            break;
+
+        case 'open-imprint':
+            e.preventDefault();
+            Security.openImprint();
+            break;
+
+        case 'open-terms':
+            e.preventDefault();
+            Security.openTerms();
+            break;
+
+        case 'open-privacy-settings':
+            e.preventDefault();
+            Security.openPrivacySettings();
+            break;
+
+        case 'accept-all-cookies':
+            acceptAllCookies();
+            break;
+
+        case 'accept-required-cookies':
+            acceptRequiredCookies();
+            break;
+
+        case 'save-consent-settings':
+            saveConsentSettings();
+            break;
+
+        case 'close-privacy-settings':
+            Security.closePrivacySettings();
+            break;
+
+        case 'close-legal-modal':
+            Security.closeLegalModal();
+            break;
+
+        case 'revoke-consent':
+            e.preventDefault();
+            Security.revokeConsent();
+            break;
+
+        case 'open-privacy-from-legal':
+            e.preventDefault();
+            Security.closeLegalModal();
+            Security.openPrivacySettings();
+            break;
+
+        case 'open-privacy-from-agb':
+            e.preventDefault();
+            Security.closeLegalModal();
+            Security.openPrivacyPolicy();
+            break;
+    }
+}
+
+function handleGlobalSubmit(e) {
+    if (e.target.id === 'authForm') {
+        handleAuth(e);
+    }
+}
 
 // ── Products ───────────────────────────────────
 function renderProducts() {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = products.map(product => `
-        <div class="product-card" onclick="showDetail('${product.id}')" tabindex="0" role="button" aria-label="${product.title}">
+        <div class="product-card"
+             data-action="show-detail"
+             data-id="${product.id}"
+             tabindex="0"
+             role="button"
+             aria-label="${product.title}">
             <div class="product-icon" style="background: ${product.iconBg}">${product.icon}</div>
             ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
             <h3 class="product-title">${product.title}</h3>
@@ -214,7 +370,9 @@ function renderProducts() {
                     ${product.price === 0 ? 'Kostenlos' : `${state.yearlyPricing ? product.priceYearly : product.price} \u20AC<span class="product-price-period"> / Monat</span>`}
                 </div>
                 <div class="product-actions">
-                    <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${product.id}')">
+                    <button class="btn btn-primary"
+                            data-action="add-to-cart"
+                            data-id="${product.id}">
                         In den Warenkorb
                     </button>
                 </div>
@@ -248,8 +406,10 @@ function showDetail(productId) {
                 </div>
             </div>
             <div class="product-actions">
-                <button class="btn btn-ghost" onclick="closeDetail()">Schlie\u00DFen</button>
-                <button class="btn btn-primary" onclick="addToCart('${product.id}'); closeDetail()">In den Warenkorb</button>
+                <button class="btn btn-ghost" data-action="close-detail">Schlie\u00DFen</button>
+                <button class="btn btn-primary"
+                        data-action="add-to-cart-close"
+                        data-id="${product.id}">In den Warenkorb</button>
             </div>
         </div>
     `;
@@ -279,7 +439,9 @@ function renderPricing() {
                 <ul class="pricing-features">
                     ${plan.features.map(f => `<li>${f}</li>`).join('')}
                 </ul>
-                <button class="btn ${plan.featured ? 'btn-primary' : 'btn-outline'} btn-full" onclick="openAuth('signup')">
+                <button class="btn ${plan.featured ? 'btn-primary' : 'btn-outline'} btn-full"
+                        data-action="open-auth"
+                        data-mode="signup">
                     ${plan.cta}
                 </button>
             </div>
@@ -350,7 +512,10 @@ function updateCartUI() {
                         <div class="cart-item-name">${item.title}</div>
                         <div class="cart-item-price">${price} \u20AC / Monat</div>
                     </div>
-                    <button class="cart-item-remove" onclick="removeFromCart('${item.id}')" aria-label="Entfernen">
+                    <button class="cart-item-remove"
+                            data-action="remove-from-cart"
+                            data-id="${item.id}"
+                            aria-label="Entfernen">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </div>
@@ -415,16 +580,16 @@ function renderAuth() {
     content.innerHTML = `
         <h2>${isLogin ? 'Willkommen zur\u00fcck' : 'Kostenlos starten'}</h2>
         <p>${isLogin ? 'Melde dich an, um deine Tools zu nutzen.' : 'Erstelle dein Konto und starte sofort.'}</p>
-        <form class="auth-form" onsubmit="handleAuth(event)">
-            ${!isLogin ? '<input type="text" class="auth-input" placeholder="Name" required>' : ''}
-            <input type="email" class="auth-input" placeholder="E-Mail-Adresse" required>
-            <input type="password" class="auth-input" placeholder="Passwort" required>
+        <form class="auth-form" id="authForm">
+            ${!isLogin ? '<input type="text" class="auth-input" placeholder="Name" required autocomplete="name">' : ''}
+            <input type="email" class="auth-input" placeholder="E-Mail-Adresse" required autocomplete="email">
+            <input type="password" class="auth-input" placeholder="Passwort" required autocomplete="${isLogin ? 'current-password' : 'new-password'}">
             <button type="submit" class="btn btn-primary btn-full">${isLogin ? 'Anmelden' : 'Konto erstellen'}</button>
         </form>
         <p class="auth-switch">
             ${isLogin
-                ? 'Noch kein Konto? <a href="#" onclick="event.preventDefault(); openAuth(\'signup\')">Registrieren</a>'
-                : 'Bereits registriert? <a href="#" onclick="event.preventDefault(); openAuth(\'login\')">Anmelden</a>'
+                ? 'Noch kein Konto? <a href="#" data-action="open-auth" data-mode="signup">Registrieren</a>'
+                : 'Bereits registriert? <a href="#" data-action="open-auth" data-mode="login">Anmelden</a>'
             }
         </p>
     `;
@@ -437,11 +602,6 @@ function handleAuth(event) {
 }
 
 // ── Navigation ─────────────────────────────────
-function goHome(event) {
-    event.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('active');
 }
@@ -466,11 +626,10 @@ function initKeyboard() {
             if (document.getElementById('cartSidebar').classList.contains('active')) {
                 toggleCart();
             }
+            Security.closeLegalModal();
+            Security.closePrivacySettings();
         }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.target.classList.contains('product-card')) {
+        if (e.key === 'Enter' && e.target.dataset.action === 'show-detail') {
             e.target.click();
         }
     });

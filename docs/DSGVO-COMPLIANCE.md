@@ -9,14 +9,16 @@
 ## 1. Verantwortlicher (Art. 4 Nr. 7 DSGVO)
 
 ```
-Idea Factory
-[Firmenname vollständig ergänzen]
+Idea Factory GbR
+vertreten durch Rocky Wüst und Melina Schwarz
 [Straße, PLZ, Stadt]
 Deutschland
 
 E-Mail: datenschutz@idea-factory.de
-Telefon: [Telefonnummer ergänzen]
 ```
+
+> **Hinweis:** GbR = Gesellschaft bürgerlichen Rechts (§§ 705 ff. BGB).
+> Beide Gesellschafter haften gesamtschuldnerisch (§ 421 BGB).
 
 ---
 
@@ -131,12 +133,8 @@ Berliner Beauftragte für Datenschutz und Informationsfreiheit
 
 | Dienst | Zweck | Übertragung | Schutzmaßnahme |
 |--------|-------|-------------|----------------|
-| Google Fonts | Schriftarten | Potentiell USA | Standard-Vertragsklauseln; alternativ: Self-Hosting geplant |
+| Inter (Schriftart) | Typografie | **Kein Transfer** — lokal in `src/assets/fonts/` | Self-Hosting, kein CDN |
 | Stripe.js | Zahlungsverarbeitung | EU-Server (Stripe EMEA) | Angemessenheitsbeschluss nicht anwendbar; SCCs |
-
-> **Empfehlung:** Google Fonts sollten self-hosted werden, um Drittland-Transfers
-> vollständig zu vermeiden. Entsprechende Schriftdateien sind in `src/assets/fonts/`
-> zu hinterlegen.
 
 ### 6.2 Grundsatz: EU-Datenverarbeitung
 

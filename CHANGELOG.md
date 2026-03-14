@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-03-14
+
+### Added
+
+- **Self-Hosted Fonts:** Inter Variable Font (7 WOFF2-Dateien, alle Unicode-Subsets) in `src/assets/fonts/` — vollständige Eliminierung des Google-Fonts-CDN-Drittland-Transfers
+- **@font-face-Deklarationen** in `styles.css` mit `font-weight: 100 900` (Variable Font)
+
+### Changed
+
+- **Event-Delegation in `app.js`:** Alle `onclick`-Attribute aus HTML entfernt — zentrale `handleGlobalClick()`-Funktion via `data-action`-Attributen. Schärfere CSP möglich.
+- **CSP verschärft:** `fonts.googleapis.com` und `fonts.gstatic.com` aus Content-Security-Policy entfernt; `img-src` auf `'self' data:` eingeschränkt
+- **Impressum:** Idea Factory GbR, Rocky Wüst und Melina Schwarz eingetragen
+- **Datenschutzerklärung:** Firmendaten aktualisiert, Google-Fonts-Absatz durch Self-Hosting-Hinweis ersetzt
+- **AGB:** Firmendaten (Idea Factory GbR, Gesellschafter) aktualisiert
+- **Footer:** © 2026 Idea Factory GbR
+- **`docs/DSGVO-COMPLIANCE.md`:** Drittland-Transfer-Tabelle aktualisiert — kein Google Fonts mehr
+- **`docs/SECURITY-CONCEPT.md`:** CSP-Dokumentation aktualisiert, Stripe-SRI-Limitation dokumentiert
+
+### Security
+
+- Kein Drittland-Transfer mehr durch Google Fonts (DSGVO-Verbesserung)
+- CSP-Scope auf `'self'` eingeschränkt für Fonts und Bilder
+
 ## [2.1.0] - 2026-03-14
 
 ### Added — Security & DSGVO

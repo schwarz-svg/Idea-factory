@@ -69,9 +69,9 @@ Alle Header sind in `vercel.json` konfiguriert und gelten für alle Routes.
 ```
 default-src 'self';
 script-src 'self' 'unsafe-inline' https://js.stripe.com;
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-font-src 'self' https://fonts.gstatic.com;
-img-src 'self' data: https:;
+style-src 'self' 'unsafe-inline';
+font-src 'self';
+img-src 'self' data:;
 connect-src 'self' https://api.stripe.com;
 frame-src https://js.stripe.com https://hooks.stripe.com;
 object-src 'none';
@@ -80,10 +80,17 @@ form-action 'self';
 upgrade-insecure-requests
 ```
 
-> **Bekannte Einschränkung:** `'unsafe-inline'` ist aktuell für `script-src` nötig,
-> da App-Logik Inline-Event-Handler in dynamisch generiertem HTML verwendet
-> (z. B. `onclick="addToCart(...)`). Der Migrationspfad zu Event-Delegation
-> ist in der Roadmap dokumentiert (vgl. Abschnitt 8).
+**Änderungen gegenüber v1:**
+- `fonts.googleapis.com` aus `style-src` entfernt → Google Fonts durch Self-Hosting ersetzt
+- `fonts.gstatic.com` aus `font-src` entfernt → Inter läuft lokal aus `src/assets/fonts/`
+- `https:` aus `img-src` entfernt → nur eigene Bilder und Data-URIs erlaubt
+- Event-Delegation in `app.js` implementiert → alle `onclick`-Attribute aus HTML entfernt
+
+> **Verbleibende Einschränkung:** `'unsafe-inline'` in `script-src` bleibt,
+> da dynamisch gerendertes HTML (Produktkarten, Warenkorb) via `innerHTML`
+> eingefügt wird und CSS-Inline-Styles (`style="background: ..."`). Diese sind
+> interne Daten, keine Nutzereingaben. Vollständige CSP-Härtung (nonce-basiert)
+> ist der nächste Schritt in der Roadmap.
 
 #### Strict-Transport-Security (HSTS)
 ```
@@ -101,9 +108,19 @@ max-age=63072000; includeSubDomains; preload
 | Cross-Origin-Opener-Policy | same-origin | Spectre-Mitigierung |
 | Cross-Origin-Resource-Policy | same-origin | Cross-Origin-Datenzugriff verhindern |
 
-### 3.2 Geplante Verbesserungen
-- **CSP ohne `unsafe-inline`:** Migration zu Event-Delegation in `app.js`
-- **Subresource Integrity (SRI):** SHA-384-Hashes für Stripe.js und Google Fonts
+### 3.2 Stripe.js & SRI
+
+> **Warum kein SRI für Stripe.js?**
+> Stripe aktualisiert `https://js.stripe.com/v3/` kontinuierlich für Sicherheits-
+> patches und Bug-Fixes. Ein statischer SHA-384-Hash würde bei jedem Stripe-Update
+> die Zahlungsfunktionalität brechen. Stripe selbst [empfiehlt ausdrücklich](https://stripe.com/docs/security/guide)
+> **kein SRI** für ihre JS-Bibliothek. Die Sicherheit basiert stattdessen auf:
+> - HTTPS (TLS) zwischen Browser und Stripe-CDN
+> - CSP: nur `https://js.stripe.com` als erlaubte Script-Quelle
+> - HSTS verhindert Downgrade-Angriffe
+
+### 3.3 Geplante Verbesserungen
+- **Nonce-basierte CSP:** Dynamisch generierte Nonces pro Request eliminieren `unsafe-inline`
 - **Report-URI:** CSP-Verletzungsberichte an Monitoring-Endpunkt
 
 ---

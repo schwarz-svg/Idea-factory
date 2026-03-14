@@ -251,6 +251,10 @@ function revokeConsent() {
 }
 
 // ── Security Init ──────────────────────────────
+/**
+ * Wird von app.js nach DOMContentLoaded aufgerufen.
+ * Kein doppelter DOMContentLoaded-Listener nötig.
+ */
 function initSecurity() {
     initConsentBanner();
     auditLog('page_load', { path: window.location.pathname });
